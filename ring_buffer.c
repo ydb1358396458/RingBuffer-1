@@ -79,10 +79,10 @@ uint8_t Ring_Buffer_Write_Byte(ring_buffer *ring_buffer_handle, uint8_t data)
     {
         *(ring_buffer_handle->array_addr + ring_buffer_handle->tail) = data;//基地址+偏移量，存放数据
         ring_buffer_handle->lenght ++ ;//数据量计数+1
-        ring_buffer_handle->tail ++ ;//尾指针后移
+        ring_buffer_handle->tail ++ ;//尾指针偏移量后移
     }
     //如果尾指针超越了数组末尾，尾指针指向缓冲区数组开头，形成闭环
-    if(ring_buffer_handle->tail > (ring_buffer_handle->max_lenght - 1))
+    if(ring_buffer_handle->tail >= (ring_buffer_handle->max_lenght))
         ring_buffer_handle->tail = 0 ;
 	return RING_BUFFER_SUCCESS ;
 }
@@ -94,14 +94,14 @@ uint8_t Ring_Buffer_Write_Byte(ring_buffer *ring_buffer_handle, uint8_t data)
 */
 uint8_t Ring_Buffer_Read_Byte(ring_buffer *ring_buffer_handle)
 {
-    uint8_t data ;
+    uint8_t data = 0x00;
     if (ring_buffer_handle->lenght != 0)//有数据未读出
     {
         data = *(ring_buffer_handle->array_addr + ring_buffer_handle->head);//读取数据
         ring_buffer_handle->head ++ ;
         ring_buffer_handle->lenght -- ;//数据量计数-1
         //如果头指针超越了数组末尾，头指针指向数组开头，形成闭环
-        if(ring_buffer_handle->head > (ring_buffer_handle->max_lenght - 1))
+        if(ring_buffer_handle->head >= (ring_buffer_handle->max_lenght))
             ring_buffer_handle->head = 0 ;
     }
     return data ;
